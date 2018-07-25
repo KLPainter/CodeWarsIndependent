@@ -1,3 +1,3 @@
 # Process Waterfowl
 
-https://www.codewars.com/kata/5b0737c724c0686bf8000172
+https://www.codewars.com/kata/process-waterfowl-survey-data-results
