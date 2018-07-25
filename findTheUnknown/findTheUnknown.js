@@ -1,19 +1,32 @@
-function nextBigger(n){
-  numbers = n.toString().split('');
-  for (let index = numbers.length - 1; index >= 1; index--) {
-    if (numbers[index] > numbers[index - 1]) {
-      const indexFirstDecreasing = index - 1;
-      const possibleValuesToMove = numbers.slice(indexFirstDecreasing)
-                                          .filter(num => num > numbers[indexFirstDecreasing]);
-      const valueToMove = Math.min (...possibleValuesToMove)
-      const indexValueToMove = numbers.indexOf(valueToMove.toString(), indexFirstDecreasing);
-      numbers.splice(indexValueToMove, 1);                                  
-      return parseInt(numbers.slice(0, indexFirstDecreasing)
-                             .concat(valueToMove, 
-                                     numbers.slice(indexFirstDecreasing, numbers.length)
-                                            .sort())
-                             .join(''));
-    }
+function solveExpression(exp) {
+
+  const posOrNegNumber = /-?[0-9\?]*/;
+  const answer = exp.split('=')[1];
+  const operand1 = exp.match(posOrNegNumber)[0];
+  const operator = exp[operand1.length];
+  const operand2 = exp.slice(operand1.length + 1, exp.indexOf('='));
+  const expression = [operand1, operator, operand2, answer];
+
+  const allQuestionMarks = /\?/g;
+  for (let test = 0; test <= 9; test++) {
+    // don't test zero if zero would be the first (but not only) digit of any of the numbers
+    if (test === 0 && expression.some(str => str[0] === '?' && str.length > 1)) continue;
+    // don't test a number that is already used in the expression
+    if (expression.some (str => str.includes(test))) continue;
+    testExp = expression.map(str => str.replace(allQuestionMarks, test.toString()))
+                        .map(str => isNaN(parseInt(str)) ? str : parseInt(str));
+    if(isCorrect(testExp)) return test;
   }
   return -1;
+
+  function isCorrect (expression) {
+    switch (expression[1]) {
+      case '+':
+        return expression[0] + expression[2] === expression[3];
+      case '-':
+        return expression[0] - expression[2] === expression[3];
+      case '*':
+        return expression[0] * expression[2] === expression[3];
+    }
+  }
 }
